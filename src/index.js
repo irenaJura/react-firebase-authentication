@@ -3,10 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import Firebase, { FirebaseContext } from './components/Firebase';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* The Firebase Context from the Firebase module (folder) is used 
+    to provide a Firebase instance to your entire application
+     Simply create the Firebase instance with the Firebase class
+      and pass it as value prop to the React's Context */}
+    <FirebaseContext.Provider value={new Firebase()}>
+      <App />
+    </FirebaseContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
