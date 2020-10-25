@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { FirebaseContext } from '../Firebase';
- 
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
  
 const SignUpPage = () => (
   <div>
     <h1>SignUp</h1>
-    <FirebaseContext.Consumer>
-      {/* pass the Firebase instance to SignUpForm */}
-      {firebase => <SignUpForm firebase={firebase} />}
-    </FirebaseContext.Consumer>
+    <SignUpForm />
   </div>
 );
 
@@ -22,7 +19,7 @@ const INITIAL_STATE = {
     error: null,
   };
  
-class SignUpForm extends Component {
+class SignUpFormBase extends Component {
   state = {...INITIAL_STATE}
   // pass all the form data to the Firebase authentication API
   // via your authentication interface in the Firebase class
@@ -33,6 +30,7 @@ class SignUpForm extends Component {
       .doCreateUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
         this.setState({ ...INITIAL_STATE });
+        this.props.history.push(ROUTES.HOME);
       })
       .catch(error => {
         this.setState({ error });
@@ -104,6 +102,13 @@ const SignUpLink = () => (
     Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
   </p>
 );
+
+// Any component that goes in the withRouter() higher-order 
+// component gains access to all the properties of the router
+const SignUpForm = compose(
+  withRouter,
+  withFirebase,
+)(SignUpFormBase);
  
 export default SignUpPage;
  
