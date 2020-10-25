@@ -1,4 +1,5 @@
 import app from 'firebase/app';
+import 'firebase/auth';
 
 const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -7,12 +8,33 @@ const config = {
     projectId: process.env.REACT_APP_PROJECT_ID,
     storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  };
-  // Initialize Firebase
-  class Firebase {
-    constructor() {
-      app.initializeApp(config);
-    }
-  }
+};
 
-  export default Firebase;
+// Initialize Firebase
+class Firebase {
+    constructor() {
+        app.initializeApp(config);
+
+        this.auth = app.auth();
+    }
+
+    // *** Auth API ***
+    // define all the authentication functions as class methods
+    // the sign up function (registration) takes email and password parameters 
+    // for its function signature and uses an official Firebase API 
+    // endpoint to create a user
+    doCreateUserWithEmailAndPassword = (email, password) =>
+        this.auth.createUserWithEmailAndPassword(email, password);
+
+    doSignInWithEmailAndPassword = (email, password) =>
+        this.auth.signInWithEmailAndPassword(email, password);
+
+    doSignOut = () => this.auth.signOut();
+
+    doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
+
+    doPasswordUpdate = password =>
+        this.auth.currentUser.updatePassword(password);
+}
+
+export default Firebase;
