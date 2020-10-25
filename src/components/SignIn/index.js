@@ -17,24 +17,29 @@ const SignInPage = () => (
 const INITIAL_STATE = {
     email: '',
     password: '',
-    error: null
-}
+    error: null,
+};
 
 class SignInFormBase extends Component {
-    state = { ...INITIAL_STATE };
+    constructor(props) {
+        super(props);
+
+        this.state = { ...INITIAL_STATE };
+    }
 
     onSubmit = event => {
         const { email, password } = this.state;
 
         this.props.firebase
-            .doSignInWIthEmailAndPassword(email, password)
+            .doSignInWithEmailAndPassword(email, password)
             .then(() => {
                 this.setState({ ...INITIAL_STATE });
                 this.props.history.push(ROUTES.HOME);
             })
             .catch(error => {
-                this.setState({ error })
+                this.setState({ error });
             });
+
         event.preventDefault();
     };
 
@@ -69,11 +74,14 @@ class SignInFormBase extends Component {
 
                 {error && <p>{error.message}</p>}
             </form>
-        )
+        );
     }
 }
 
-const SignInForm = compose(withRouter, withFirebase)(SignInFormBase);
+const SignInForm = compose(
+    withRouter,
+    withFirebase,
+)(SignInFormBase);
 
 export default SignInPage;
 
