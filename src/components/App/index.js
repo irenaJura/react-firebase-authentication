@@ -9,34 +9,16 @@ import HomePage from '../Home';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 
-import { withFirebase } from '../Firebase';
+import { withAuthentication } from '../Session';
 import * as ROUTES from '../../constants/routes';
 
 class App extends Component {
-  state = {
-    authUser: null
-  }
-
-  componentDidMount() {
-    console.log(this.props.firebase)
-    // Firebase offers a listener function to get the 
-    // authenticated user from Firebase
-    this.listener = this.props.firebase.auth.onAuthStateChanged(authUser => {
-      authUser
-        ? this.setState({ authUser })
-        : this.setState({ authUser: null })
-    });
-  }
-
-  componentWillUnmount() {
-    this.listener();
-  }
-
   render() {
     return (
+
       <Router>
         <div>
-          <Navigation authUser={this.state.authUser} />
+          <Navigation />
 
           <hr />
 
@@ -49,8 +31,8 @@ class App extends Component {
           <Route path={ROUTES.ADMIN} component={AdminPage} />
         </div>
       </Router>
-    )
+    );
   }
 }
 
-export default withFirebase(App);
+export default withAuthentication(App);
