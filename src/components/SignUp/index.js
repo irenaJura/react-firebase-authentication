@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import * as ROLES from '../../constants/roles';
  
 const SignUpPage = () => (
   <div>
@@ -16,6 +17,7 @@ const INITIAL_STATE = {
     email: '',
     passwordOne: '',
     passwordTwo: '',
+    isAdmin: false,
     error: null,
   };
  
@@ -24,8 +26,13 @@ class SignUpFormBase extends Component {
   // pass all the form data to the Firebase authentication API
   // via your authentication interface in the Firebase class
   onSubmit = event => {
-    const { username, email, passwordOne } = this.state;
- 
+    const { username, email, passwordOne, isAdmin } = this.state;
+    const roles = {};
+
+    if(isAdmin) {
+      roles[ROLES.ADMIN] = ROLES.ADMIN;
+    }
+
     this.props.firebase
       // create a user in Firebase's internal authentication database
       .doCreateUserWithEmailAndPassword(email, passwordOne)
@@ -33,7 +40,7 @@ class SignUpFormBase extends Component {
         // create a user in firebase realtime db
         return this.props.firebase
         .user(authUser.user.uid)
-        .set({ username, email });
+        .set({ username, email, roles });
       })
       .then(authUser => {
         this.setState({ ...INITIAL_STATE });
@@ -49,6 +56,10 @@ class SignUpFormBase extends Component {
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  onChangeCheckbox = event => {
+    this.set({ [event.target.name]: event.target.checked})
+  };
  // All the input fields implement the unidirectional data flow of React
  // each input field gets a value from the local state and 
  // updates the value in the local state with a onChange handler
@@ -58,6 +69,7 @@ class SignUpFormBase extends Component {
         email,
         passwordOne,
         passwordTwo,
+        isAdmin,
         error,
       } = this.state;
       const isInvalid =
@@ -95,6 +107,15 @@ class SignUpFormBase extends Component {
           type="password"
           placeholder="Confirm Password"
         />
+          <label>
+          Admin:
+          <input
+            name="isAdmin"
+            type="checkbox"
+            checked={isAdmin}
+            onChange={this.onChangeCheckbox}
+          />
+        </label>
         <button disabled={isInvalid} type="submit">Sign Up</button>
         {/* message is only shown when there is an actual 
         error using a conditional rendering. */}
