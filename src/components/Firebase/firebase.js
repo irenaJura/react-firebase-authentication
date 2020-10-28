@@ -18,6 +18,9 @@ class Firebase {
 
         this.auth = app.auth();
         this.db = app.database();
+
+        // Helper for timestamp
+        this.serverValue = app.database.ServerValue;
     }
 
     // *** Auth API ***
