@@ -16,7 +16,7 @@ class MessagesBase extends Component {
     state = {
         text: '',
         loading: false,
-        messages: []
+        messages: [],
     }
 
     componentDidMount() {
@@ -56,6 +56,10 @@ class MessagesBase extends Component {
         event.preventDefault();
     }
 
+    onRemoveMessage = (uid) => {
+        this.props.firebase.message(uid).remove();
+    }
+
     render() {
         const { text, loading, messages } = this.state;
 
@@ -63,12 +67,16 @@ class MessagesBase extends Component {
             <AuthUserContext.Consumer>
                 {authUser => (
                     <div>
-                        {loading && <div>Loading...</div>}
+                        {loading && <div>Loading ...</div>}
+                        {messages ? (
+                            <MessageList
+                                messages={messages}
+                                onRemoveMessage={this.onRemoveMessage}
+                            />
+                        ) : (
+                                <div>There are no messages ...</div>
+                            )}
 
-                        {messages ?
-                            <MessageList messages={messages} />
-                            : <div>There are no messages...</div>
-                        }
                         <form onSubmit={event => this.onCreateMessage(event, authUser)}>
                             <input
                                 type="text"
@@ -80,22 +88,31 @@ class MessagesBase extends Component {
                     </div>
                 )}
             </AuthUserContext.Consumer>
-
         );
     }
 };
 
-const MessageList = ({ messages }) => (
+const MessageList = ({ messages, onRemoveMessage }) => (
     <ul>
         {messages.map(message => (
-            <MessageItem key={message.uid} message={message} />
+            <MessageItem
+                key={message.uid}
+                message={message}
+                onRemoveMessage={onRemoveMessage}
+            />
         ))}
     </ul>
 );
 
-const MessageItem = ({ message }) => (
+const MessageItem = ({ message, onRemoveMessage }) => (
     <li>
         <strong>{message.userId}</strong> {message.text}
+        <button
+            type="button"
+            onClick={() => onRemoveMessage(message.uid)}
+        >
+            Delete
+        </button>
     </li>
 );
 
