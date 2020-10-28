@@ -72,6 +72,13 @@ class Firebase {
     user = uid => this.db.ref(`users/${uid}`);
     // get a reference to all users
     users = () => this.db.ref('users');
+
+    // Message API
+    // Messages are readable and writeable on two
+    // API endpoints: messages and messages/:messageId. 
+    message = uid => this.db.ref(`messages/${uid}`);
+ 
+    messages = () => this.db.ref('messages');
 }
 
 export default Firebase;
