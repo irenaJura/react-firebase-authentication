@@ -42,7 +42,7 @@ class SignUpFormBase extends Component {
         .user(authUser.user.uid)
         .set({ username, email, roles });
       })
-      .then(authUser => {
+      .then(() => {
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
       })
@@ -58,7 +58,7 @@ class SignUpFormBase extends Component {
   };
 
   onChangeCheckbox = event => {
-    this.set({ [event.target.name]: event.target.checked})
+    this.setState({ [event.target.name]: event.target.checked})
   };
  // All the input fields implement the unidirectional data flow of React
  // each input field gets a value from the local state and 
