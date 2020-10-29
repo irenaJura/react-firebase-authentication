@@ -17,24 +17,39 @@ class MessagesBase extends Component {
         text: '',
         loading: false,
         messages: [],
+        limit: 5
     }
 
     componentDidMount() {
+        this.onListenForMessages();
+    }
+
+    onListenForMessages() {
         this.setState({ loading: true });
 
-        this.props.firebase.messages().on('value', snapshot => {
-            const messageObject = snapshot.val();
+        this.props.firebase.messages()
+            .orderByChild('createdAt')
+            .limitToLast(this.state.limit)
+            .on('value', snapshot => {
+                const messageObject = snapshot.val();
 
-            if (messageObject) {
-                const messageList = Object.keys(messageObject).map(key => ({
-                    ...messageObject[key],
-                    uid: key
-                }))
-                this.setState({ messages: messageList, loading: false })
-            } else {
-                this.setState({ messages: null, loading: false })
-            }
-        });
+                if (messageObject) {
+                    const messageList = Object.keys(messageObject).map(key => ({
+                        ...messageObject[key],
+                        uid: key
+                    }))
+                    this.setState({ messages: messageList, loading: false })
+                } else {
+                    this.setState({ messages: null, loading: false })
+                }
+            });
+    }
+
+    onNextPage = () => {
+        this.setState(
+            () => ({ limit: this.state.limit + 5 }),
+            this.onListenForMessages
+        )
     }
 
     componentWillUnmount() {
@@ -78,6 +93,11 @@ class MessagesBase extends Component {
             <AuthUserContext.Consumer>
                 {authUser => (
                     <div>
+                        {!loading && messages && (
+                            <button type="button" onClick={this.onNextPage}>
+                                More
+                            </button>
+                        )}
                         {loading && <div>Loading ...</div>}
                         {messages ? (
                             <MessageList
