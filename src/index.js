@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { Provider } from 'mobx-react';
+
+import store from './stores';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import Firebase, { FirebaseContext } from './components/Firebase';
@@ -11,9 +13,11 @@ ReactDOM.render(
     to provide a Firebase instance to your entire application
      Simply create the Firebase instance with the Firebase class
       and pass it as value prop to the React's Context */}
-    <FirebaseContext.Provider value={new Firebase()}>
-      <App />
-    </FirebaseContext.Provider>
+    <Provider {...store}>
+      <FirebaseContext.Provider value={new Firebase()}>
+        <App />
+      </FirebaseContext.Provider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
