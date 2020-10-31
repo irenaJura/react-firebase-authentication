@@ -1,5 +1,4 @@
 import { observable, action, computed } from 'mobx';
-import { act } from 'react-dom/test-utils';
 
 class MessageStore {
     @observable messages = null;
@@ -13,7 +12,7 @@ class MessageStore {
         this.messages = messages;
     }
 
-    @act setLimit = limit => {
+    @action setLimit = limit => {
         this.limit = limit;
     }
 

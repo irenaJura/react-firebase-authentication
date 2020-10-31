@@ -6,10 +6,14 @@
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "babel-plugin-import": "^1.13.1",
+    "babel-plugin-styled-components": "^1.11.1",
+    "customize-cra": "^1.0.0",
     "firebase": "^7.24.0",
     "mobx": "^6.0.1",
     "mobx-react": "^7.0.0",
     "react": "^17.0.1",
+    "react-app-rewire-mobx": "^1.0.9",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
@@ -17,10 +21,10 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-app-rewired eject"
   },
   "eslintConfig": {
     "extends": [
@@ -42,7 +46,10 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-react"
+      "react-app"
     ]
+  },
+  "devDependencies": {
+    "react-app-rewired": "^2.1.6"
   }
 }
